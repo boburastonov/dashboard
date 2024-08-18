@@ -1,7 +1,9 @@
+import Main from "./Main/main";
+
 export default function Home() {
   return (
     <>
-      <h1>hello world</h1>
+      <Main />
     </>
   );
 }

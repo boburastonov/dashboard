@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
 body {
   color: #000;
   background-color: #fff;
@@ -11,4 +18,8 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.active {
+  background-color: #1677FF;
 }
