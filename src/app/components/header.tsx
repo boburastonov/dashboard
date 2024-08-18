@@ -4,7 +4,7 @@ import Link from "next/link";
 import { RiMenuFoldFill, RiMenuUnfoldFill } from "react-icons/ri";
 import { IoMdLogOut } from "react-icons/io";
 
-const Header = () => {
+const Header:React.FC = () => {
   const [open, setOpen] = useState<boolean>(true);
   return (
     <header className="w-[85.4%] flex items-center justify-between px-10 py-[10px] ml-auto bg-white">
