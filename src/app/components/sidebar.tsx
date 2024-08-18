@@ -2,12 +2,11 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { AiFillHome } from "react-icons/ai";
-import { IoMdSettings } from "react-icons/io";
 import { IoCarSportSharp, IoNewspaper, IoStorefront } from "react-icons/io5";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { PiBuildingApartmentFill } from "react-icons/pi";
-import { useRouter } from "next/router";
 import { sideBar } from "../interface";
+import { BiSolidCategory } from "react-icons/bi";
 
 const sidebarData: sideBar[] = [
   {
@@ -18,9 +17,9 @@ const sidebarData: sideBar[] = [
   },
   {
     id: 2,
-    title: "Settings",
-    icon: <IoMdSettings />,
-    path: "/settings",
+    title: "Categories",
+    icon: <BiSolidCategory />,
+    path: "/categories",
   },
   {
     id: 3,
@@ -74,7 +73,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-56 h-full bg-[#001529] pt-6 text-center text-white float-start">
+    <aside className="w-56 h-full bg-[#001529] pt-6 -mt-[60px] text-center text-white float-left z-50">
       <h1 className="font-bold text-[20px] leading-[28px] mb-6">
         AutoZoom Admin
       </h1>
@@ -82,7 +81,9 @@ const Sidebar: React.FC = () => {
         {sidebarData.map((item) => (
           <li
             key={item.id}
-            className={`${activeItem === item.id ? 'active' : ''} m-1 pl-6 pr-4 py-3 rounded-[10px]`}
+            className={`${
+              activeItem === item.id ? "active" : ""
+            } m-1 pl-6 pr-4 py-3 rounded-[10px]`}
             onClick={() => handleItemClick(item.id)}
           >
             <Link href={item.path} className="flex items-center gap-2">
