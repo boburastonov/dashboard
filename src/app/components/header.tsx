@@ -4,8 +4,11 @@ import Link from "next/link";
 import { RiMenuFoldFill, RiMenuUnfoldFill } from "react-icons/ri";
 import { IoMdLogOut } from "react-icons/io";
 
-const Header:React.FC = () => {
+const Header: React.FC = () => {
   const [open, setOpen] = useState<boolean>(true);
+  const logOut = () => {
+    localStorage.removeItem("token");
+  };
   return (
     <header className="w-[85.4%] flex items-center justify-between px-10 py-[10px] ml-auto bg-white">
       <button
@@ -16,6 +19,7 @@ const Header:React.FC = () => {
       </button>
       <Link
         href={"/login"}
+        onClick={() => logOut()}
         className="inline-flex items-center #3e3e3e text-center px-3 py-1 bg-transparent rounded-md outline-0 border border-solid border-[#2e2e2e] text-[20px] font-semibold gap-2 transition-all duration-[0.3s] hover:border-none hover:bg-[#1677ff] hover:text-white"
       >
         Log out <IoMdLogOut />
