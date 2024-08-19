@@ -6,7 +6,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = () => {
   return (
-    <main className="w-[85.4%] flex-1 p-[30px] ml-auto bg-[#4094f726]"></main>
+    <main className="w-[85.4%] fixed top-[60px] bottom-[57px] right-0 p-[30px] ml-auto bg-[#4094f726]"></main>
   );
 };
 
