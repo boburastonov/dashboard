@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import Login from "./login/page";
 import { ToastContainer } from "react-toastify";
+import Main from "./main/page";
 
 export default function Home() {
   let router = useRouter();
@@ -20,7 +20,7 @@ export default function Home() {
   }
   return (
     <>
-      <Login />
+      <Main />
       <ToastContainer />
     </>
   );

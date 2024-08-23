@@ -7,6 +7,8 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { PiBuildingApartmentFill } from "react-icons/pi";
 import { sideBar } from "../interface";
 import { BiSolidCategory } from "react-icons/bi";
+import Image from "next/image";
+import Logo from "../../../public/logo.svg";
 
 const sidebarData: sideBar[] = [
   {
@@ -53,7 +55,12 @@ const sidebarData: sideBar[] = [
   },
 ];
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   const [activeItem, setActiveItem] = useState<number | null>(null);
 
   useEffect(() => {
@@ -69,25 +76,44 @@ const Sidebar: React.FC = () => {
 
   const handleItemClick = (id: number) => {
     setActiveItem(id);
-    localStorage.setItem("activeItem", id.toString()); // active itemni saqlash
+    // localStorage.setItem("activeItem", id.toString()); // active itemni saqlash
   };
 
   return (
-    <aside className="w-56 h-full bg-[#001529] pt-6 -mt-[60px] text-center text-white float-left z-50">
-      <h1 className="font-bold text-[20px] leading-[28px] mb-6">
-        AutoZoom Admin
-      </h1>
+    <aside
+      className={`${
+        open ? "w-[15.6%]" : "w-[6.2%]"
+      } h-full bg-[#001529] pt-6 -mt-[60px] text-center text-white float-left z-[999] transition-all duration-[0.3s]`}
+    >
+      {open ? (
+        <h1 className="font-bold text-[20px] leading-[28px] mb-6">
+          AutoZoom Admin
+        </h1>
+      ) : (
+        <Image
+          src={Logo}
+          alt="logo"
+          width={72}
+          height={74}
+          className="m-auto mb-6"
+        />
+      )}
       <ul className="list-none">
         {sidebarData.map((item) => (
           <li
             key={item.id}
-            className={`${
-              activeItem === item.id ? "active" : ""
-            } m-1 pl-6 pr-4 py-3 rounded-[10px]`}
+            className={`${activeItem === item.id ? "active" : ""} m-1 ${
+              open ? "pl-6" : "pl-4"
+            } pr-4 py-3 rounded-[10px]`}
             onClick={() => handleItemClick(item.id)}
           >
-            <Link href={item.path} className="flex items-center gap-2">
-              {item.icon} {item.title}
+            <Link
+              href={item.path}
+              className={`${
+                open ? "gap-2" : "gap-0" && "text-xl"
+              } flex items-center transition-all duration-[0.3s] text-center`}
+            >
+              {item.icon} {open && item.title}
             </Link>
           </li>
         ))}
