@@ -14,7 +14,9 @@ export interface MyResponseData {
   image_src: string;
   name_ru: string;
   name_en: string;
+  title: string;
   index: number;
+  name: string;
   data: {
     tokens: {
       accessToken: {
