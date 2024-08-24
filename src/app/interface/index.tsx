@@ -15,6 +15,7 @@ export interface MyResponseData {
   name_ru: string;
   name_en: string;
   title: string;
+  brand_title: string;
   index: number;
   name: string;
   data: {
