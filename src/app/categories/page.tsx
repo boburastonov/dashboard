@@ -12,11 +12,13 @@ const Categories: React.FC = () => {
   const [open, setOpen] = useState<boolean>(true);
 
   const [openModal, setOpenModal] = useState(false);
+  const [editModal, setEditModal] = useState<boolean>(false);
   const [data, setData] = useState<MyResponseData[] | undefined>();
   const [nameRu, setNameRu] = useState<string>();
   const [nameEn, setNameEn] = useState<string>();
   const [pic, setPic] = useState<File | undefined>();
-  const token = localStorage.getItem("token");
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const formData = new FormData();
 
   formData.append("name_ru", nameRu || "");
@@ -27,7 +29,15 @@ const Categories: React.FC = () => {
     setOpenModal(true);
     setEditModal(false);
   };
-  const closeModalItem = () => setOpenModal(false);
+  const closeModalItem = () => {
+    setOpenModal(false);
+    setEditModal(false); // Edit modalni yopish
+  };
+  const editModalFunction = (status: boolean, item?: MyResponseData) => {
+    setOpenModal(false);
+    setEditModal(true);
+    setIdBtn(item?.id);
+  };
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
@@ -38,14 +48,15 @@ const Categories: React.FC = () => {
       }
     };
 
-    if (openModal) {
+    if (openModal || editModal) {
       window.addEventListener("click", handleOutsideClick);
     }
 
     return () => {
       window.removeEventListener("click", handleOutsideClick);
     };
-  }, [openModal]);
+  }, [openModal, editModal]);
+
   const getFunction = () => {
     axios
       .get("https://autoapi.dezinfeksiyatashkent.uz/api/categories")
@@ -58,26 +69,29 @@ const Categories: React.FC = () => {
   }, []);
 
   const addFunction = (e: React.FormEvent) => {
+    e.preventDefault(); // Form submitlashi oldini olish uchun
     axios
       .post(
         "https://autoapi.dezinfeksiyatashkent.uz/api/categories",
-        { formData },
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       )
-      .then((res: AxiosResponse<MyResponseData>) => res?.data)
-      .then((data: MyResponseData) => {
+      .then((res: AxiosResponse<MyResponseData>) => {
+        const data = res?.data;
         if (data?.success) {
           toast.success(data?.message);
           getFunction();
         } else {
           toast.error(data?.message);
         }
-      });
+      })
+      .catch((err) => console.error("API request failed: ", err));
   };
+
   /* Delete Datas */
   const deleteFunction = (id: string) => {
     axios
@@ -97,140 +111,226 @@ const Categories: React.FC = () => {
   };
 
   /* Edit Data */
-  const [editModal, setEditModal] = useState<boolean>(false);
-  const editModalFunction = (status: boolean) => {
-    setOpenModal(false);
-    setEditModal(true);
-  };
+
   const [idBtn, setIdBtn] = useState<string>();
   const editFunction = (e: React.FormEvent) => {
     e.preventDefault();
     axios
       .put(
         `https://autoapi.dezinfeksiyatashkent.uz/api/categories/${idBtn}`,
-        { formData },
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       )
-      .then((res: AxiosResponse<MyResponseData>) => res?.data)
-      .then((data: MyResponseData) => {
+      .then((res: AxiosResponse<MyResponseData>) => {
+        const data = res?.data;
         if (data?.success) {
           toast.success(data?.message);
           setEditModal(false);
+          getFunction(); // Ma'lumotlarni yangilash uchun chaqirish
         } else {
           toast.error(data?.message);
         }
-      });
+      })
+      .catch((err) => console.error("API request failed: ", err));
   };
 
   return (
     <section className="h-[100vh]">
       <Header open={open} setOpen={setOpen} />
       <Sidebar open={open} setOpen={setOpen} />
-      {openModal && (
+      {openModal ? (
         /* Modal */
         <div
           id="modal-background"
           className="fixed top-0 h-full w-full z-50 flex items-center justify-center bg-[#00000072]"
         >
-          <div className="flex flex-col justify-center mx-3 mt-6 lg:flex-row">
-            <div className="w-full lg:w-2/3 m-1">
-              <form
-                onSubmit={editModal ? editFunction : addFunction}
-                className="w-full bg-white shadow-md p-6"
-              >
-                <div className="flex flex-wrap -mx-3 mb-6">
-                  <div className="w-full md:w-full px-3 mb-6">
-                    <label
-                      className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
-                      htmlFor="name_ru"
-                    >
-                      NameRu
-                    </label>
-                    <input
-                      className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
-                      type="text"
-                      onChange={(e: React.FormEvent) =>
-                        setNameRu((e?.target as HTMLInputElement)?.value)
-                      }
-                      name="name"
-                      id="name_ru"
-                      required
-                    />
-                    <label
-                      className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
-                      htmlFor="name_ru"
-                    >
-                      NameEn
-                    </label>
-                    <input
-                      className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
-                      type="text"
-                      onChange={(e: React.FormEvent) =>
-                        setNameEn((e?.target as HTMLInputElement)?.value)
-                      }
-                      name="name"
-                      id="name_en"
-                      required
-                    />
-                  </div>
-
-                  <div className="w-full px-3 mb-8">
-                    <label
-                      className="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-green-400 bg-white p-6 text-center"
-                      htmlFor="dropzone-file"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-10 w-10 text-green-800"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        id="dropzone-file"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                        />
-                      </svg>
-
-                      <h2 className="mt-4 text-xl font-medium text-gray-700 tracking-wide">
-                        Category image
-                      </h2>
-                      <p className="mt-2 text-gray-500 tracking-wide">
-                        Upload or drag & drop your file SVG, PNG, JPG or GIF.{" "}
-                      </p>
-
-                      <input
-                        id="dropzone-file"
-                        type="file"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setPic(file);
-                          }
-                        }}
-                        className="hidden"
-                        name="category_image"
-                        accept="image/png, image/jpeg, image/webp"
-                      />
-                    </label>
-                  </div>
-                  <div className="w-full md:w-full px-3 mb-6">
-                    <button className="appearance-none block w-full bg-green-700 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-green-600 focus:outline-none focus:bg-white focus:border-gray-500">
-                      {editModal ? "Edit Category" : "Add Category"}
-                    </button>
-                  </div>
+          <div className="flex justify-center w-2/3 m-2">
+            <form
+              onSubmit={editModal ? editFunction : addFunction}
+              className="w-full bg-white shadow-md p-6"
+            >
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full md:w-full px-3 mb-6">
+                  <label
+                    className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="name_ru"
+                  >
+                    NameRu
+                  </label>
+                  <input
+                    className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
+                    type="text"
+                    onChange={(e: React.FormEvent) =>
+                      setNameRu((e?.target as HTMLInputElement)?.value)
+                    }
+                    name="name"
+                    id="name_ru"
+                    required
+                  />
+                  <label
+                    className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="name_ru"
+                  >
+                    NameEn
+                  </label>
+                  <input
+                    className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
+                    type="text"
+                    onChange={(e: React.FormEvent) =>
+                      setNameEn((e?.target as HTMLInputElement)?.value)
+                    }
+                    name="name"
+                    id="name_en"
+                    required
+                  />
                 </div>
-              </form>
-            </div>
+
+                <div className="w-full px-3 mb-8">
+                  <label
+                    className="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-green-400 bg-white p-6 text-center"
+                    htmlFor="dropzone-file"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-10 w-10 text-green-800"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
+                    </svg>
+
+                    <h2 className="mt-4 text-xl font-medium text-gray-700 tracking-wide">
+                      Category image
+                    </h2>
+
+                    <p className="mt-2 text-gray-500 tracking-wide">
+                      Upload or drag & drop your file SVG, PNG, JPG or GIF.{" "}
+                    </p>
+
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      className="hidden"
+                      name="category_image"
+                      accept="image/png, image/jpeg, image/webp"
+                    />
+                  </label>
+                </div>
+
+                <div className="w-full md:w-full px-3 mb-6">
+                  <button className="appearance-none block w-full bg-green-700 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-green-600 focus:outline-none focus:bg-white focus:border-gray-500">
+                    Add Category
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
+      ) : editModal ? (
+        /* Modal */
+        <div
+          id="modal-background"
+          className="fixed top-0 h-full w-full z-50 flex items-center justify-center bg-[#00000072]"
+        >
+          <div className="flex justify-center w-2/3 m-2">
+            <form
+              onSubmit={editModal ? editFunction : addFunction}
+              className="w-full bg-white shadow-md p-6"
+            >
+              <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="w-full md:w-full px-3 mb-6">
+                  <label
+                    className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="name_ru"
+                  >
+                    NameRu
+                  </label>
+                  <input
+                    className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
+                    type="text"
+                    onChange={(e: React.FormEvent) =>
+                      setNameRu((e?.target as HTMLInputElement)?.value)
+                    }
+                    name="name"
+                    id="name_ru"
+                    required
+                  />
+                  <label
+                    className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="name_ru"
+                  >
+                    NameEn
+                  </label>
+                  <input
+                    className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
+                    type="text"
+                    onChange={(e: React.FormEvent) =>
+                      setNameEn((e?.target as HTMLInputElement)?.value)
+                    }
+                    name="name"
+                    id="name_en"
+                    required
+                  />
+                </div>
+
+                <div className="w-full px-3 mb-8">
+                  <label
+                    className="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-green-400 bg-white p-6 text-center"
+                    htmlFor="dropzone-file"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-10 w-10 text-green-800"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
+                    </svg>
+
+                    <h2 className="mt-4 text-xl font-medium text-gray-700 tracking-wide">
+                      Category image
+                    </h2>
+
+                    <p className="mt-2 text-gray-500 tracking-wide">
+                      Upload or drag & drop your file SVG, PNG, JPG or GIF.{" "}
+                    </p>
+
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      className="hidden"
+                      name="category_image"
+                      accept="image/png, image/jpeg, image/webp"
+                    />
+                  </label>
+                </div>
+                <div className="w-full md:w-full px-3 mb-6">
+                  <button className="appearance-none block w-full bg-green-700 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-green-600 focus:outline-none focus:bg-white focus:border-gray-500">
+                    Edit Category
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : (
+        ""
       )}
       {
         <div
@@ -304,12 +404,11 @@ const Categories: React.FC = () => {
                       />
                     </td>
                     <td
-                      onClick={() => editModalFunction(true)}
                       key={item?.index}
                       className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
                     >
                       <button
-                        onClick={() => setIdBtn(item?.id)}
+                        onClick={() => editModalFunction(true, item)}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 border border-blue-500 rounded mr-3"
                       >
                         Edit
