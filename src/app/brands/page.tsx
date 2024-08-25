@@ -102,6 +102,10 @@ const Brands: React.FC = () => {
         } else {
           toast.error(data?.message);
         }
+      })
+      .catch((err) => {
+        console.error("API request failed: ", err);
+        toast.error("Delete operation failed. Please try again.");
       });
   };
 
@@ -109,7 +113,9 @@ const Brands: React.FC = () => {
 
   const [idBtn, setIdBtn] = useState<string>();
   const editFunction = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Form submit'ni to'xtatish uchun
+    const formData = new FormData(); // Har safar yangilash
+
     axios
       .put(
         `https://autoapi.dezinfeksiyatashkent.uz/api/brands/${idBtn}`,
@@ -117,6 +123,7 @@ const Brands: React.FC = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       )
@@ -300,115 +307,113 @@ const Brands: React.FC = () => {
       ) : (
         ""
       )}
-      {
-        <div
-          className={`${
-            open ? "w-[84.4%]" : "w-[93.8%]"
-          } fixed top-[60px] bottom-[57px] right-0 p-[30px] ml-auto bg-[#4094f726] transition-all duration-[0.3s]`}
-        >
-          <form className="w-[50%]">
-            <label
-              htmlFor="default-search"
-              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300"
-            >
-              Search
-            </label>
-            <div className="relative">
-              <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                <IoSearchSharp className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              </div>
-              <input
-                type="search"
-                id="default-search"
-                className="block p-3 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search Mockups, Logos..."
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      <div
+        className={`${
+          open ? "w-[84.4%]" : "w-[93.8%]"
+        } fixed top-[60px] bottom-[57px] right-0 p-[30px] ml-auto bg-[#4094f726] transition-all duration-[0.3s]`}
+      >
+        <form className="w-[50%]">
+          <label
+            htmlFor="default-search"
+            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300"
+          >
+            Search
+          </label>
+          <div className="relative">
+            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+              <IoSearchSharp className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </div>
-          </form>
-          <table className="min-w-full border-collapse block md:table">
-            <thead className="block md:table-header-group">
-              <tr className="border border-grey-500 md:border-none block md:table-row absolute -top-full md:top-auto -left-full md:left-auto  md:relative ">
-                <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
-                  &#8470;
-                </th>
-                <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
-                  Name
-                </th>
-                <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
-                  Image
-                </th>
-                <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
-                  Actions
-                </th>
-                <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
-                  <button
-                    onClick={openModalItem}
-                    className="bg-[#1677ff] hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+            <input
+              type="search"
+              id="default-search"
+              className="block p-3 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search Mockups, Logos..."
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </form>
+        <table className="min-w-full border-collapse block md:table">
+          <thead className="block md:table-header-group">
+            <tr className="border border-grey-500 md:border-none block md:table-row absolute -top-full md:top-auto -left-full md:left-auto  md:relative ">
+              <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
+                &#8470;
+              </th>
+              <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
+                Name
+              </th>
+              <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
+                Image
+              </th>
+              <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
+                Actions
+              </th>
+              <th className="bg-gray-600 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
+                <button
+                  onClick={openModalItem}
+                  className="bg-[#1677ff] hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                >
+                  Add Brand
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="block md:table-row-group">
+            {filteredData &&
+              Array.isArray(filteredData) &&
+              filteredData.map((item, index) => (
+                <tr
+                  key={item?.id}
+                  className="bg-gray-300 border border-grey-500 md:border-none block md:table-row"
+                >
+                  <td
+                    key={item?.index}
+                    className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
                   >
-                    Add Brand
-                  </button>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="block md:table-row-group">
-              {filteredData &&
-                Array.isArray(filteredData) &&
-                filteredData.map((item, index) => (
-                  <tr
-                    key={item?.id}
-                    className="bg-gray-300 border border-grey-500 md:border-none block md:table-row"
+                    {index + 1}
+                  </td>
+                  <td
+                    key={item?.index}
+                    className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
                   >
-                    <td
-                      key={item?.index}
-                      className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
+                    {item?.title}
+                  </td>
+                  <td
+                    key={item?.index}
+                    className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
+                  >
+                    <Image
+                      src={`https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/${item?.image_src}`}
+                      width={60}
+                      height={60}
+                      alt={item?.title}
+                    />
+                  </td>
+                  <td
+                    key={item?.index}
+                    className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
+                  >
+                    <button
+                      onClick={() => editModalFunction(true, item)}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 border border-blue-500 rounded mr-3"
                     >
-                      {index + 1}
-                    </td>
-                    <td
-                      key={item?.index}
-                      className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
+                      Edit
+                    </button>
+                    <button
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 border border-red-500 rounded"
+                      onClick={() => deleteFunction(item?.id)}
                     >
-                      {item?.title}
-                    </td>
-                    <td
-                      key={item?.index}
-                      className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
-                    >
-                      <Image
-                        src={`https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/${item?.image_src}`}
-                        width={60}
-                        height={60}
-                        alt={item?.title}
-                      />
-                    </td>
-                    <td
-                      key={item?.index}
-                      className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
-                    >
-                      <button
-                        onClick={() => editModalFunction(true, item)}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 border border-blue-500 rounded mr-3"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 border border-red-500 rounded"
-                        onClick={() => deleteFunction(item?.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                    <td
-                      key={item?.index}
-                      className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
-                    ></td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      }
+                      Delete
+                    </button>
+                  </td>
+                  <td
+                    key={item?.index}
+                    className="p-2 md:border md:border-grey-500 text-center block md:table-cell"
+                  ></td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
       <Footer open={open} setOpen={setOpen} />
     </section>
   );
