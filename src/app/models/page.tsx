@@ -7,7 +7,6 @@ import Sidebar from "../components/sidebar";
 import Footer from "../components/footer";
 import { toast } from "react-toastify";
 import { IoSearchSharp } from "react-icons/io5";
-import { Select, Option } from "@material-tailwind/react";
 
 const Models: React.FC = () => {
   const [open, setOpen] = useState<boolean>(true);
@@ -140,10 +139,7 @@ const Models: React.FC = () => {
       item.brand_title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  //filter option values
-  const uniqueBrands = Array.from(
-    new Set(filteredData.map((item) => item.brand_title))
-  );
+  
 
   return (
     <section className="h-[100vh]">
@@ -194,14 +190,6 @@ const Models: React.FC = () => {
                     id="brand_title"
                     required
                   />
-                </div>
-
-                <div className="w-72">
-                  <select className="cursor-pointer p-3 shadow-2xl border border-solid border-[#ccc] outline-none ml-3 mb-4">
-                    {uniqueBrands.map((item, index) => (
-                      <option key={index}>{item}</option>
-                    ))}
-                  </select>
                 </div>
 
                 <div className="w-full md:w-full px-3 mb-6">
@@ -258,14 +246,6 @@ const Models: React.FC = () => {
                     id="brand_title"
                     required
                   />
-                </div>
-
-                <div className="w-72">
-                  <select className="cursor-pointer p-3 shadow-2xl border border-solid border-[#ccc] outline-none ml-3 mb-4">
-                    {uniqueBrands.map((item, index) => (
-                      <option key={index}>{item}</option>
-                    ))}
-                  </select>
                 </div>
                 <div className="w-full md:w-full px-3 mb-6">
                   <button className="appearance-none block w-full bg-green-700 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-green-600 focus:outline-none focus:bg-white focus:border-gray-500">
