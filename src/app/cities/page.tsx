@@ -112,6 +112,15 @@ const Cities: React.FC = () => {
   const [idBtn, setIdBtn] = useState<string>();
   const editFunction = (e: React.FormEvent) => {
     e.preventDefault();
+    const formData = new FormData();
+
+    formData.append("name", name || "");
+    formData.append("text", about || "");
+    formData.append("images", pic || "");
+    if (pic) {
+      formData.append("images", pic);
+    }
+
     axios
       .put(
         `https://autoapi.dezinfeksiyatashkent.uz/api/cities/${idBtn}`,
@@ -133,6 +142,11 @@ const Cities: React.FC = () => {
         }
       })
       .catch((err) => console.error("API request failed: ", err));
+  };
+
+  const handleChangeFile = (e: React.FormEvent<HTMLInputElement>) => {
+    const files = e.currentTarget.files;
+    if (files) setPic(files[0]);
   };
 
   //filter data
@@ -225,6 +239,7 @@ const Cities: React.FC = () => {
                       className="hidden"
                       name="brand_image"
                       accept="image/png, image/jpeg, image/webp"
+                      onChange={handleChangeFile}
                     />
                   </label>
                 </div>
@@ -317,6 +332,7 @@ const Cities: React.FC = () => {
                       className="hidden"
                       name="brand_image"
                       accept="image/png, image/jpeg, image/webp"
+                      onChange={handleChangeFile}
                     />
                   </label>
                 </div>
