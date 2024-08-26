@@ -11,48 +11,13 @@ import Image from "next/image";
 import Logo from "../../../public/logo.svg";
 
 const sidebarData: sideBar[] = [
-  {
-    id: 1,
-    title: "Dashboard",
-    icon: <AiFillHome />,
-    path: "/",
-  },
-  {
-    id: 2,
-    title: "Categories",
-    icon: <BiSolidCategory />,
-    path: "/categories",
-  },
-  {
-    id: 3,
-    title: "Brands",
-    icon: <IoStorefront />,
-    path: "/brands",
-  },
-  {
-    id: 4,
-    title: "Models",
-    icon: <IoNewspaper />,
-    path: "/models",
-  },
-  {
-    id: 5,
-    title: "Locations",
-    icon: <FaMapLocationDot />,
-    path: "/locations",
-  },
-  {
-    id: 6,
-    title: "Cities",
-    icon: <PiBuildingApartmentFill />,
-    path: "/cities",
-  },
-  {
-    id: 7,
-    title: "Cars",
-    icon: <IoCarSportSharp />,
-    path: "/cars",
-  },
+  { id: 1, title: "Dashboard", icon: <AiFillHome />, path: "/" },
+  { id: 2, title: "Categories", icon: <BiSolidCategory />, path: "/categories" },
+  { id: 3, title: "Brands", icon: <IoStorefront />, path: "/brands" },
+  { id: 4, title: "Models", icon: <IoNewspaper />, path: "/models" },
+  { id: 5, title: "Locations", icon: <FaMapLocationDot />, path: "/locations" },
+  { id: 6, title: "Cities", icon: <PiBuildingApartmentFill />, path: "/cities" },
+  { id: 7, title: "Cars", icon: <IoCarSportSharp />, path: "/cars" },
 ];
 
 interface SidebarProps {
@@ -64,19 +29,17 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   const [activeItem, setActiveItem] = useState<number | null>(null);
 
   useEffect(() => {
-    // Avvalgi active itemni localStorage'dan olish
-    const savedActiveItem = localStorage.getItem("activeItem");
-    if (savedActiveItem) {
-      setActiveItem(Number(savedActiveItem));
+    const currentPath = window.location.pathname;
+    const currentItem = sidebarData.find((item) => item.path === currentPath);
+    if (currentItem) {
+      setActiveItem(currentItem.id);
     } else {
-      // Agar hech narsa saqlanmagan bo'lsa, default active itemni belgilash
-      setActiveItem(sidebarData[0].id); // Masalan, birinchi item
+      setActiveItem(sidebarData[0].id); // Default to the first item
     }
   }, []);
 
   const handleItemClick = (id: number) => {
     setActiveItem(id);
-    // localStorage.setItem("activeItem", id.toString()); // active itemni saqlash
   };
 
   return (
