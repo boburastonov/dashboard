@@ -116,6 +116,12 @@ const Brands: React.FC = () => {
     e.preventDefault(); // Form submit'ni to'xtatish uchun
     const formData = new FormData(); // Har safar yangilash
 
+    formData.append("title", name || "");
+    formData.append("images", pic || "");
+    if (pic) {
+      formData.append("images", pic);
+    }
+
     axios
       .put(
         `https://autoapi.dezinfeksiyatashkent.uz/api/brands/${idBtn}`,
@@ -138,6 +144,11 @@ const Brands: React.FC = () => {
         }
       })
       .catch((err) => console.error("API request failed: ", err));
+  };
+
+  const handleChangeFile = (e: React.FormEvent<HTMLInputElement>) => {
+    const files = e.currentTarget.files;
+    if (files) setPic(files[0]);
   };
 
   //filter data
@@ -214,6 +225,7 @@ const Brands: React.FC = () => {
                       className="hidden"
                       name="brand_image"
                       accept="image/png, image/jpeg, image/webp"
+                      onChange={handleChangeFile}
                     />
                   </label>
                 </div>
@@ -292,6 +304,7 @@ const Brands: React.FC = () => {
                       className="hidden"
                       name="brand_image"
                       accept="image/png, image/jpeg, image/webp"
+                      onChange={handleChangeFile}
                     />
                   </label>
                 </div>
