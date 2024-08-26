@@ -17,14 +17,9 @@ const Categories: React.FC = () => {
   const [data, setData] = useState<MyResponseData[] | undefined>();
   const [nameRu, setNameRu] = useState<string>();
   const [nameEn, setNameEn] = useState<string>();
-  const [pic, setPic] = useState<File | undefined>();
+  const [pic, setPic] = useState<File | null>();
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const formData = new FormData();
-
-  formData.append("name_ru", nameRu || "");
-  formData.append("name_en", nameEn || "");
-  formData.append("images", pic || "");
 
   //add categories modal open function
   const openModalItem = () => {
@@ -120,6 +115,14 @@ const Categories: React.FC = () => {
 
   const [idBtn, setIdBtn] = useState<string>();
   const editFunction = (e: React.FormEvent) => {
+    const formData = new FormData();
+
+    formData.append("name_ru", nameRu || "");
+    formData.append("name_en", nameEn || "");
+    if (pic) {
+      formData.append("images", pic);
+    }
+
     e.preventDefault();
     axios
       .put(
@@ -151,6 +154,11 @@ const Categories: React.FC = () => {
       item.name_ru?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.name_en?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleChangeFile = (e: React.FormEvent<HTMLInputElement>) => {
+    const files = e.currentTarget.files;
+    if (files) setPic(files[0]);
+  };
 
   return (
     <section className="h-[100vh]">
@@ -237,6 +245,7 @@ const Categories: React.FC = () => {
                       className="hidden"
                       name="category_image"
                       accept="image/png, image/jpeg, image/webp"
+                      onChange={handleChangeFile}
                     />
                   </label>
                 </div>
@@ -331,6 +340,7 @@ const Categories: React.FC = () => {
                       className="hidden"
                       name="category_image"
                       accept="image/png, image/jpeg, image/webp"
+                      onChange={handleChangeFile}
                     />
                   </label>
                 </div>
