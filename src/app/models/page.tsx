@@ -14,14 +14,15 @@ const Models: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [editModal, setEditModal] = useState<boolean>(false);
   const [data, setData] = useState<MyResponseData[] | undefined>();
+  const [brandData, setBrandData] = useState<MyResponseData[]>();
   const [name, setName] = useState<string>();
-  const [brandTitle, setBrandTitle] = useState<string>();
+  const [brandId, setBrandId] = useState<string>();
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const formData = new FormData();
 
   formData.append("name", name || "");
-  formData.append("brand_title", brandTitle || "");
+  formData.append("brand_id", brandId || "");
 
   const openModalItem = () => {
     setOpenModal(true);
@@ -62,14 +63,22 @@ const Models: React.FC = () => {
       .then((data: MyResponseData[]) => setData(data))
       .catch((err) => console.error("API request failed: ", err));
   };
+  const getFunctionBrand = () => {
+    axios
+      .get("https://autoapi.dezinfeksiyatashkent.uz/api/brands")
+      .then((res: AxiosResponse<{ data: MyResponseData[] }>) => res?.data?.data)
+      .then((data: MyResponseData[]) => setBrandData(data))
+      .catch((err) => console.error("API request failed: ", err));
+  };
   useEffect(() => {
     getFunction();
+    getFunctionBrand();
   }, []);
 
   const addFunction = (e: React.FormEvent) => {
     e.preventDefault(); // Form submitlashi oldini olish uchun
     axios
-      .post("https://autoapi.dezinfeksiyatashkent.uz/api/brands", formData, {
+      .post("https://autoapi.dezinfeksiyatashkent.uz/api/models", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -139,8 +148,6 @@ const Models: React.FC = () => {
       item.brand_title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  
-
   return (
     <section className="h-[100vh]">
       <Header open={open} setOpen={setOpen} />
@@ -174,22 +181,21 @@ const Models: React.FC = () => {
                     id="name"
                     required
                   />
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="brand_title"
-                  >
-                    Brand
-                  </label>
-                  <input
-                    className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
-                    type="text"
-                    onChange={(e: React.FormEvent) =>
-                      setName((e?.target as HTMLInputElement)?.value)
-                    }
-                    name="brand"
-                    id="brand_title"
-                    required
-                  />
+                  <div className="w-72">
+                    <select
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        setBrandId(e?.target?.value);
+                      }}
+                      className="mt-3 p-3 shadow-2xl rounded-lg border border-solid border-[#ccc] outline-none"
+                    >
+                      {brandData &&
+                        brandData?.map((brand, index) => (
+                          <option value={brand.id} key={index}>
+                            {brand.title}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="w-full md:w-full px-3 mb-6">
@@ -230,22 +236,19 @@ const Models: React.FC = () => {
                     id="name"
                     required
                   />
-                  <label
-                    className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="brand_title"
-                  >
-                    Brand
-                  </label>
-                  <input
-                    className="appearance-none block w-full bg-white text-gray-900 font-medium border border-gray-400 rounded-lg py-3 px-3 leading-tight focus:outline-none focus:border-[#98c01d]"
-                    type="text"
-                    onChange={(e: React.FormEvent) =>
-                      setName((e?.target as HTMLInputElement)?.value)
-                    }
-                    name="brand"
-                    id="brand_title"
-                    required
-                  />
+                  <div className="w-72">
+                    <select
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        setBrandId(e?.target?.value);
+                      }}
+                      className="mt-3 p-3 shadow-2xl rounded-lg border border-solid border-[#ccc] outline-none"
+                    >
+                      {brandData &&
+                        brandData.map((brand, index) => (
+                          <option value={brand.id} key={index}>{brand.title}</option>
+                        ))}
+                    </select>
+                  </div>
                 </div>
                 <div className="w-full md:w-full px-3 mb-6">
                   <button className="appearance-none block w-full bg-green-700 text-gray-100 font-bold border border-gray-200 rounded-lg py-3 px-3 leading-tight hover:bg-green-600 focus:outline-none focus:bg-white focus:border-gray-500">
