@@ -74,7 +74,7 @@ const Categories: React.FC = () => {
     axios
       .post(
         "https://autoapi.dezinfeksiyatashkent.uz/api/categories",
-        formData,
+        FormData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
