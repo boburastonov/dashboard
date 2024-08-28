@@ -19,6 +19,7 @@ export interface MyResponseData {
   text: string;
   index: number;
   name: string;
+  color: string;
   data: {
     tokens: {
       accessToken: {
