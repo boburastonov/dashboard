@@ -391,7 +391,7 @@ const Categories: React.FC = () => {
           </form>
           <div className="w-full h-[72vh] overflow-scroll overflow-x-hidden">
             <table className="w-full h-full border-collapse block md:table overflow-y-scroll">
-              <thead className="block md:table-header-group">
+              <thead className="block md:table-header-group sticky top-0">
                 <tr className="border md:border-none block md:table-row absolute -top-full md:top-auto -left-full md:left-auto  md:relative ">
                   <th className="bg-gray-700 p-2 text-white font-bold md:border md:border-grey-500 text-center block md:table-cell">
                     &#8470;
