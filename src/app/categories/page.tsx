@@ -20,6 +20,13 @@ const Categories: React.FC = () => {
   const [pic, setPic] = useState<File | null>();
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const formData = new FormData();
+
+  formData.append("name_ru", nameRu || "");
+  formData.append("name_en", nameEn || "");
+  if (pic) {
+    formData.append("images", pic);
+  }
 
   //add categories modal open function
   const openModalItem = () => {
@@ -71,17 +78,13 @@ const Categories: React.FC = () => {
   //add new datas function
   const addFunction = (e: React.FormEvent) => {
     e.preventDefault(); // Form submitlashi oldini olish uchun
-    const formData = new FormData();
-
-    formData.append("name_ru", nameRu || "");
-    formData.append("name_en", nameEn || "");
-    if (pic) {
-      formData.append("images", pic);
-    }
+    // if (pic) {
+    //   formData.append("images", pic);
+    // }
     axios
       .post(
         "https://autoapi.dezinfeksiyatashkent.uz/api/categories",
-        FormData,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
