@@ -71,6 +71,13 @@ const Categories: React.FC = () => {
   //add new datas function
   const addFunction = (e: React.FormEvent) => {
     e.preventDefault(); // Form submitlashi oldini olish uchun
+    const formData = new FormData();
+
+    formData.append("name_ru", nameRu || "");
+    formData.append("name_en", nameEn || "");
+    if (pic) {
+      formData.append("images", pic);
+    }
     axios
       .post(
         "https://autoapi.dezinfeksiyatashkent.uz/api/categories",
