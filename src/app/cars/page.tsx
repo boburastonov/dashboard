@@ -701,7 +701,7 @@ const Cars: React.FC = () => {
                         id="dropzone-coverFile"
                         type="file"
                         className="hidden"
-                        name="car_image"
+                        name="car_image1"
                         accept="image/png, image/jpeg, image/webp"
                         onChange={handleChangeFileCover}
                       />
@@ -710,7 +710,7 @@ const Cars: React.FC = () => {
                   <div className="w-full px-3 mb-8">
                     <label
                       className="mx-auto cursor-pointer flex w-full max-w-lg flex-col items-center justify-center rounded-xl border-2 border-dashed border-green-400 bg-white p-6 text-center"
-                      htmlFor="dropzone-file"
+                      htmlFor="dropzone-file2"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -736,10 +736,10 @@ const Cars: React.FC = () => {
                       </p>
 
                       <input
-                        id="dropzone-file"
+                        id="dropzone-file2"
                         type="file"
                         className="hidden"
-                        name="car_image"
+                        name="car_image3"
                         accept="image/png, image/jpeg, image/webp"
                         onChange={handleChangeFiles}
                       />
